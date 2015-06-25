@@ -20,14 +20,15 @@ namespace CloudBall.Engines.Toothless
 
 		private void MyAction(TurnInfo turn)
 		{
-			if (InitiativeIsOurs(turn))
-			{
-				DumbAttack(turn);
-			}
-			else
-			{
-				SmartDefense(turn);
-			}
+			//if (InitiativeIsOurs(turn))
+			//{
+			//	DumbAttack(turn);
+			//}
+			//else
+			//{
+			//	SmartDefense(turn);
+			//}
+			SmartDefense(turn);
 		}
 
 		private void DumbAttack(TurnInfo turn)
@@ -68,12 +69,20 @@ namespace CloudBall.Engines.Toothless
 		private void SmartDefense(TurnInfo turn)
 		{
 			var unassigned = new List<Player>(turn.Own.Players);
+			unassigned.Remove(_ballOwner.Apply(turn, unassigned));
 			unassigned.Remove(_pickup.Apply(turn, unassigned));
+			unassigned.Remove(_catchUp.Apply(turn, unassigned));
 			unassigned.Remove(_keeper.Apply(turn, unassigned));
+			unassigned.Remove(_defender.Apply(turn, unassigned));
+			unassigned.Remove(_defender.Apply(turn, unassigned));
+			unassigned.Remove(_defender.Apply(turn, unassigned));
 		}
 
+		private Roles.IRole _ballOwner = new Roles.BallOwner();
 		private Roles.IRole _pickup = new Roles.Pickup();
+		private Roles.IRole _catchUp = new Roles.CatchUp();
 		private Roles.IRole _keeper = new Roles.Keeper();
+		private Roles.IRole _defender = new Roles.Defender();
 
 		private bool InitiativeIsOurs(TurnInfo turn)
 		{
