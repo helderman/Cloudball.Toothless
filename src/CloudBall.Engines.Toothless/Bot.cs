@@ -13,13 +13,8 @@ namespace CloudBall.Engines.Toothless
 	{
 		public void Action(Team myTeam, Team enemyTeam, Ball ball, MatchInfo matchInfo)
 		{
-			var turn = new TurnInfo()
-			{
-				Own = myTeam,
-				Other = enemyTeam,
-				Ball = ball,
-				Match = matchInfo,
-			};
+			var turn = TurnInfo.Create(myTeam, enemyTeam, ball, matchInfo);
+			
 
 			var path = BallPath.Create(turn);
 
