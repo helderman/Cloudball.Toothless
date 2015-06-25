@@ -9,12 +9,13 @@ namespace CloudBall.Engines.Toothless.Models
 {
 	public class TurnInfo
 	{
+		public int Turn { get { return Match.CurrentTimeStep; } }
 		public Team Own { get; set; }
 		public Team Other { get; set; }
 		public Ball Ball { get; set; }
 		public MatchInfo Match { get; set; }
-		public BallPath Path { get; set; }
-
+		public BallPath Path { get; protected set; }
+		public List<CatchUp> CatchUps { get; protected set; }
 		public IEnumerable<Player> Players
 		{
 			get
@@ -26,17 +27,17 @@ namespace CloudBall.Engines.Toothless.Models
 
 		public static TurnInfo Create(Team myTeam, Team enemyTeam, Ball ball, MatchInfo matchInfo)
 		{
-			var turn = new TurnInfo()
+			var info = new TurnInfo()
 			{
 				Own = myTeam,
 				Other = enemyTeam,
 				Ball = ball,
 				Match = matchInfo,
 			};
-			turn.Path = BallPath.Create(turn);
+			info.Path = BallPath.Create(info);
+			info.CatchUps = info.Path.GetCatchUp(info.Players).OrderBy(c => c.Turn).ToList();
 
-
-			return turn;
+			return info;
 		}
 	}
 }

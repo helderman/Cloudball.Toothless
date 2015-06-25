@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace CloudBall.Engines.Toothless.Models
 {
-	public class BallPath: List<Vector>
+	public class BallPath : List<Vector>
 	{
 		public enum Ending
 		{
@@ -20,20 +20,37 @@ namespace CloudBall.Engines.Toothless.Models
 
 		public IEnumerable<CatchUp> GetCatchUp(IEnumerable<Player> players)
 		{
-			return null;
+			foreach (var player in players)
+			{
+				for (var turn = 0; turn < Count; turn++)
+				{
+					var disPlayer = Constants.PlayerMaxVelocity * turn + Constants.BallMaxPickUpDistance;
+					var disBall = (this[turn] - player.Position).LengthSquared;
+
+					if (disPlayer * disPlayer > disBall)
+					{
+						yield return new CatchUp()
+						{
+							Turn = turn,
+							Player = player,
+							Position = this[turn],
+						};
+						break;
+					}
+				}
+			}
 		}
 
-		
-		public static BallPath Create(TurnInfo turn)
+		public static BallPath Create(TurnInfo info)
 		{
 			var path = new BallPath();
 
-			var position = turn.Ball.Position;
-			var velocity = turn.Ball.Velocity;
+			var position = info.Ball.Position;
+			var velocity = info.Ball.Velocity;
 
 			path.Add(position);
 
-			for (var i = 0; i < 1000; i++)
+			for (var i = 0; i < Constants.GameEngineMatchLength - info.Turn; i++)
 			{
 				velocity *= Constants.BallSlowDownFactor;
 				position += velocity;
