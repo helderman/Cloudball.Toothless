@@ -15,19 +15,31 @@ namespace CloudBall.Engines.Toothless
 		{
 			var turn = TurnInfo.Create(myTeam, enemyTeam, ball, matchInfo);
 			
-
 			var path = BallPath.Create(turn);
+
+			var sortedPlayers = myTeam.Players.OrderByDescending(p => p.Position.X);
 
 			foreach (Player player in myTeam.Players)
 			{
 				if (ball.Owner == player)
 				{
-					player.ActionShootGoal();
+					if (ball.GetDistanceTo(Field.EnemyGoal.Center) < 50)
+					{
+						player.ActionShootGoal();
+					}
+					else if (player == sortedPlayers.First())
+					{
+						player.ActionGo(Field.EnemyGoal.Center);
+					}
+					else
+					{
+						player.ActionShoot(sortedPlayers.First());
+					}
 				}
 				else
 				{
 					//player.ActionGo(ball);
-					player.ActionGo(path[100]);
+					player.ActionGo(path[10]);
 					if (player.CanPickUpBall(ball))
 					{
 						player.ActionPickUpBall();
