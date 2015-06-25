@@ -73,6 +73,7 @@ namespace CloudBall.Engines.Toothless
 			unassigned.Remove(_pickup.Apply(turn, unassigned));
 			unassigned.Remove(_catchUp.Apply(turn, unassigned));
 			unassigned.Remove(_keeper.Apply(turn, unassigned));
+			unassigned.Remove(_sweeper.Apply(turn, unassigned));
 			unassigned.Remove(_defender.Apply(turn, unassigned));
 			unassigned.Remove(_defender.Apply(turn, unassigned));
 			unassigned.Remove(_defender.Apply(turn, unassigned));
@@ -82,6 +83,7 @@ namespace CloudBall.Engines.Toothless
 		private Roles.IRole _pickup = new Roles.Pickup();
 		private Roles.IRole _catchUp = new Roles.CatchUp();
 		private Roles.IRole _keeper = new Roles.Keeper();
+		private Roles.IRole _sweeper = new Roles.Sweeper();
 		private Roles.IRole _defender = new Roles.Defender();
 
 		private bool InitiativeIsOurs(TurnInfo turn)
