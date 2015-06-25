@@ -17,6 +17,12 @@ namespace CloudBall.Engines.Toothless.Models
 		}
 
 		public Ending End { get; protected set; }
+
+		public IEnumerable<CatchUp> GetCatchUp(IEnumerable<Player> players)
+		{
+			return null;
+		}
+
 		
 		public static BallPath Create(TurnInfo turn)
 		{
