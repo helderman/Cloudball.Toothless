@@ -38,11 +38,26 @@ namespace CloudBall.Engines.Toothless.Models
 				velocity *= Constants.BallSlowDownFactor;
 				position += velocity;
 
-				//if (!Field.Borders.Contains(position))
-				//{
-				//	// bounce; must adjust position and velocity
-				//	Field.Borders.
-				//}
+				if (position.X < Field.Borders.Left.X)
+				{
+					velocity.X = -velocity.X;
+					position.X = 2 * Field.Borders.Left.X - position.X;
+				}
+				if (position.X > Field.Borders.Right.X)
+				{
+					velocity.X = -velocity.X;
+					position.X = 2 * Field.Borders.Right.X - position.X;
+				}
+				if (position.Y < Field.Borders.Top.Y)
+				{
+					velocity.Y = -velocity.Y;
+					position.Y = 2 * Field.Borders.Top.Y - position.Y;
+				}
+				if (position.Y > Field.Borders.Bottom.Y)
+				{
+					velocity.Y = -velocity.Y;
+					position.Y = 2 * Field.Borders.Bottom.Y - position.Y;
+				}
 
 				path.Add(position);
 
