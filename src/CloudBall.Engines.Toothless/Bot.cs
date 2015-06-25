@@ -21,6 +21,8 @@ namespace CloudBall.Engines.Toothless
 				Match = matchInfo,
 			};
 
+			var path = BallPath.Create(turn);
+
 			foreach (Player player in myTeam.Players)
 			{
 				if (ball.Owner == player)
@@ -29,7 +31,8 @@ namespace CloudBall.Engines.Toothless
 				}
 				else
 				{
-					player.ActionGo(ball);
+					//player.ActionGo(ball);
+					player.ActionGo(path[100]);
 					if (player.CanPickUpBall(ball))
 					{
 						player.ActionPickUpBall();
