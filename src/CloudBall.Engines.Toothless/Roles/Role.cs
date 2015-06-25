@@ -4,5 +4,6 @@
 	{
 		public static IRole Keeper = new Keeper();
 		public static IRole CatchUp = new CatchUp();
+		public static IRole Sweeper = new Sweeper();
 	}
 }
