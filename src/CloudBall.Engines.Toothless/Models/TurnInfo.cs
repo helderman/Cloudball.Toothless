@@ -25,6 +25,8 @@ namespace CloudBall.Engines.Toothless.Models
 			}
 		}
 
+		public bool HasPossession { get; protected set; }
+
 		public static TurnInfo Create(Team myTeam, Team enemyTeam, Ball ball, MatchInfo matchInfo)
 		{
 			var info = new TurnInfo()
@@ -36,6 +38,10 @@ namespace CloudBall.Engines.Toothless.Models
 			};
 			info.Path = BallPath.Create(info);
 			info.CatchUps = info.Path.GetCatchUp(info.Players).OrderBy(c => c.Turn).ToList();
+			info.HasPossession =
+				myTeam.Players.Contains(ball.Owner) ||
+				myTeam.Players.Any(p => p.CanPickUpBall(ball)) ||
+				(info.CatchUps.Any() && myTeam.Players.Contains(info.CatchUps[0].Player));
 
 			return info;
 		}

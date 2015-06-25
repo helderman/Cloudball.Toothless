@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Common;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,13 +14,17 @@ namespace CloudBall.Engines.Toothless.Roles
 			var player = queue.FirstOrDefault(p => p == turn.Ball.Owner);
 			if (player != null)
 			{
-				var closestOpponent = turn.Other.Players.Where(p => p.GetDistanceTo(Common.Field.EnemyGoal) < player.GetDistanceTo(Common.Field.EnemyGoal)).OrderBy(p => p.GetDistanceTo(player)).First();
-				if (!turn.Other.Players.Where(p => p.CanTackle(player) || p.GetDistanceTo(Common.Field.EnemyGoal) < player.GetDistanceTo(Common.Field.EnemyGoal)).Any())
+				var closestOpponent = turn.Other.Players
+					.Where(p => p.GetDistanceTo(Common.Field.EnemyGoal) < player.GetDistanceTo(Common.Field.EnemyGoal))
+					.OrderBy(p => p.GetDistanceTo(player))
+					.First();
+				if (!turn.Other.Players.Where(p => p.CanTackle(player) ||
+					p.GetDistanceTo(Common.Field.EnemyGoal) < player.GetDistanceTo(Common.Field.EnemyGoal)).Any())
 				{
 					// Just keep running, they will never catch up with you! Shoot softly at the very last moment.
-					if (player.GetDistanceTo(Common.Field.EnemyGoal) < 3)
+					if (player.GetDistanceTo(Common.Field.EnemyGoal) < 300)
 					{
-						player.ActionShootGoal(1);
+						player.ActionShootGoal(7);
 					}
 					else
 					{
@@ -33,11 +38,19 @@ namespace CloudBall.Engines.Toothless.Roles
 				}
 				else
 				{
-					var closestTeamMate = turn.Own.Players.OrderBy(p => p.GetDistanceTo(player)).First();
-					var distance = closestTeamMate.GetDistanceTo(player);
-					if (distance > 200 && distance < 500)
+					var passebleTeamMate = turn.Own.Players
+						.Where(p => p.Position.X > player.Position.X)
+						.Where(p =>
+						{
+							var distance = p.GetDistanceTo(player);
+							return distance > 200 && distance < 600;
+						})
+						.OrderBy(p => p.GetDistanceTo(Field.EnemyGoal.Center))
+						.FirstOrDefault();
+
+					if (passebleTeamMate != null)
 					{
-						player.ActionShoot(closestTeamMate);
+						player.ActionShoot(passebleTeamMate, 7.5f);
 					}
 					else
 					{

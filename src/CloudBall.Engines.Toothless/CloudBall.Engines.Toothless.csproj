@@ -8,7 +8,7 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>CloudBall.Engines.Toothless</RootNamespace>
-    <AssemblyName>Toothless</AssemblyName>
+    <AssemblyName>Toothless_0.1</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -56,6 +56,9 @@
     <Compile Include="Roles\Role.cs" />
     <Compile Include="Roles\Defender.cs" />
     <Compile Include="Roles\Sweeper.cs" />
+    <Compile Include="Scenarios\DefaultFieldplay.cs" />
+    <Compile Include="Scenarios\IScenario.cs" />
+    <Compile Include="Scenarios\Scenario.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\CloudBall\src\CloudBall.Common\CloudBall.Common.csproj">
