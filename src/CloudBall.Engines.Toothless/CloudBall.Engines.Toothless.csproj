@@ -47,6 +47,9 @@
     <Compile Include="Models\CatchUp.cs" />
     <Compile Include="Models\TurnInfo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Roles\IRole.cs" />
+    <Compile Include="Roles\Keeper.cs" />
+    <Compile Include="Roles\Role.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\CloudBall\src\CloudBall.Common\CloudBall.Common.csproj">
