@@ -1,4 +1,5 @@
-﻿using Common;
+﻿using CloudBall.Engines.Toothless.Models;
+using Common;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,6 +13,14 @@ namespace CloudBall.Engines.Toothless
 	{
 		public void Action(Team myTeam, Team enemyTeam, Ball ball, MatchInfo matchInfo)
 		{
+			var turn = new TurnInfo()
+			{
+				Own = myTeam,
+				Other = enemyTeam,
+				Ball = ball,
+				Match = matchInfo,
+			};
+
 			foreach (Player player in myTeam.Players)
 			{
 				if (ball.Owner == player)
