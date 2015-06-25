@@ -14,16 +14,32 @@ namespace CloudBall.Engines.Toothless
 		public void Action(Team myTeam, Team enemyTeam, Ball ball, MatchInfo matchInfo)
 		{
 			var turn = TurnInfo.Create(myTeam, enemyTeam, ball, matchInfo);
-			
-			var path = BallPath.Create(turn);
 
-			var sortedPlayers = myTeam.Players.OrderByDescending(p => p.Position.X);
+			MyAction(turn);
+		}
 
-			foreach (Player player in myTeam.Players)
+		private void MyAction(TurnInfo turn)
+		{
+			if (InitiativeIsOurs(turn))
 			{
-				if (ball.Owner == player)
+				DumbAttack(turn);
+			}
+			else
+			{
+				SmartDefense(turn);
+			}
+		}
+
+		private void DumbAttack(TurnInfo turn)
+		{
+			var path = BallPath.Create(turn);
+			var sortedPlayers = turn.Own.Players.OrderByDescending(p => p.Position.X);
+
+			foreach (Player player in turn.Own.Players)
+			{
+				if (turn.Ball.Owner == player)
 				{
-					if (ball.GetDistanceTo(Field.EnemyGoal.Center) < 50)
+					if (turn.Ball.GetDistanceTo(Field.EnemyGoal.Center) < 50)
 					{
 						player.ActionShootGoal();
 					}
@@ -38,15 +54,31 @@ namespace CloudBall.Engines.Toothless
 				}
 				else
 				{
-					//player.ActionGo(ball);
+					//player.ActionGo(turn.Ball);
 					player.ActionGo(path[10]);
-					if (player.CanPickUpBall(ball))
+					if (player.CanPickUpBall(turn.Ball))
 					{
 						player.ActionPickUpBall();
 					}
 				}
 				//player.ActionGo(new Vector(50, 50));
 			}
+		}
+
+		private void SmartDefense(TurnInfo turn)
+		{
+			var unassigned = new List<Player>(turn.Own.Players);
+			unassigned.Remove(_pickup.Apply(turn, unassigned));
+			unassigned.Remove(_keeper.Apply(turn, unassigned));
+		}
+
+		private Roles.IRole _pickup = new Roles.Pickup();
+		private Roles.IRole _keeper = new Roles.Keeper();
+
+		private bool InitiativeIsOurs(TurnInfo turn)
+		{
+			var closestPlayer = turn.Ball.Owner ?? turn.CatchUps.First().Player;
+			return turn.Own.Players.Contains(closestPlayer);
 		}
 	}
 }

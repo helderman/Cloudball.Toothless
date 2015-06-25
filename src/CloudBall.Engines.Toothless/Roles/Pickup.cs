@@ -10,7 +10,12 @@ namespace CloudBall.Engines.Toothless.Roles
 	{
 		public Common.Player Apply(Models.TurnInfo turn, IEnumerable<Common.Player> queue)
 		{
-			return queue.First(player => player.CanPickUpBall(turn.Ball));
+			var player = queue.FirstOrDefault(p => p.CanPickUpBall(turn.Ball));
+			if (player != null)
+			{
+				player.ActionPickUpBall();
+			}
+			return player;
 		}
 	}
 }
