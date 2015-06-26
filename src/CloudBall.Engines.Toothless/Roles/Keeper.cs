@@ -20,7 +20,7 @@ namespace CloudBall.Engines.Toothless.Roles
 				// give it just a best try.
 				if (catchup == null)
 				{
-					keeper.ActionGo(turn.Ball);
+					keeper.ActionWait();
 				}
 				else 
 				{
@@ -36,6 +36,7 @@ namespace CloudBall.Engines.Toothless.Roles
 
 		private Player GetClosestBy(IEnumerable<Player> queue)
 		{
+			var sorted = queue.OrderBy(q => GetDistanceToGoalSquared(q.Position)).ToList();
 			return queue
 				.OrderBy(q => GetDistanceToGoalSquared(q.Position))
 				.FirstOrDefault();
@@ -44,17 +45,17 @@ namespace CloudBall.Engines.Toothless.Roles
 		public float GetDistanceToGoalSquared(Vector position)
 		{
 			// above the goal
-			if (position.Y <= Field.EnemyGoal.Top.Y)
+			if (position.Y <= Field.MyGoal.Top.Y)
 			{
-				return (Field.EnemyGoal.Top - position).LengthSquared;
+				return (Field.MyGoal.Top - position).LengthSquared;
 			}
-			if (position.Y >= Field.EnemyGoal.Bottom.Y)
+			if (position.Y >= Field.MyGoal.Bottom.Y)
 			{
-				return (Field.EnemyGoal.Bottom - position).LengthSquared;
+				return (Field.MyGoal.Bottom - position).LengthSquared;
 			}
-			var dY = Field.Borders.Y - position.Y;
+			var dX = Field.Borders.X - position.X;
 
-			return dY * dY;
+			return dX * dX;
 		}
 	}
 }

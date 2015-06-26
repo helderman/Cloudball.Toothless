@@ -1,4 +1,6 @@
 ﻿using CloudBall.Engines.Toothless.Models;
+using CloudBall.Engines.Toothless.Roles;
+using CloudBall.Engines.Toothless.Scenarios;
 using Common;
 using System;
 using System.Collections.Generic;
@@ -11,24 +13,26 @@ namespace CloudBall.Engines.Toothless
 	[BotName("Toothless 0.1")]
 	public class Bot : ITeam
 	{
+		protected static readonly IRole[] Roles = new IRole[]
+		{
+			Role.BallOwner,
+			Role.Pickup,
+			Role.CatchUp,
+			Role.Keeper,
+			Role.Sweeper,
+		};
+
 		public void Action(Team myTeam, Team enemyTeam, Ball ball, MatchInfo matchInfo)
 		{
-			var turn = TurnInfo.Create(myTeam, enemyTeam, ball, matchInfo);
+			var info = TurnInfo.Create(myTeam, enemyTeam, ball, matchInfo);
 
-			MyAction(turn);
-		}
+			var queue = info.Own.Players.ToList();
 
-		private void MyAction(TurnInfo turn)
-		{
-			//if (InitiativeIsOurs(turn))
-			//{
-			//	DumbAttack(turn);
-			//}
-			//else
-			//{
-			//	SmartDefense(turn);
-			//}
-			SmartDefense(turn);
+			foreach (var role in Roles)
+			{
+				queue.Remove(role.Apply(info, queue));
+			}
+			Scenario.DefaultFieldplay.Apply(info, queue);
 		}
 
 		private void DumbAttack(TurnInfo turn)
