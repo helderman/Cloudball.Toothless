@@ -1,6 +1,10 @@
 Toothless
 =========
 
+Version 1.1
+-----------
+Small tweak on shooting on goal.
+
 Version 1.0
 -----------
 Takes the position of opponents into account when passing.

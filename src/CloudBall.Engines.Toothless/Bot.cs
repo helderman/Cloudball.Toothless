@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace CloudBall.Engines.Toothless
 {
-	[BotName("Toothless 1.0")]
+	[BotName("Toothless 1.1")]
 	public class Bot : ITeam
 	{
 		protected static readonly IRole[] Roles = new IRole[]

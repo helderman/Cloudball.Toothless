@@ -68,18 +68,31 @@ namespace CloudBall.Engines.Toothless.Roles
 					return owner;
 				}
 			}
-			// run or shoot
 
-			if (owner.Position.X > 1800)
+			// if getting too close to opponent, shoot on goal
+			if (info.Other.Players.Any(oppo => oppo.CanTackle(owner)))
 			{
 				owner.ActionShootGoal();
+				return owner;
 			}
-			else
+
+			// if nobody can catch, shoot on goal.
+			if (!info.Other.Players.Any(oppo => MightCatch(oppo.Position - owner.Position, Field.EnemyGoal.Position - owner.Position)))
 			{
-				owner.ActionGo(Field.EnemyGoal.Center);
+				owner.ActionShootGoal();
+				return owner;
 			}
+
+			// else run.
+			owner.ActionGo(Field.EnemyGoal.Center);
 					
 			return owner;
+		}
+
+		private static bool MightCatch(Vector oppoVector, Vector targetVector)
+		{
+			var accuracy = Statistics.GetAccuracy(PassingPower, PassingZ);
+			return Math.Abs(Mathematics.GetAngle(oppoVector, targetVector)) < accuracy;
 		}
 
 		private static bool IsCandidate(Player ballOwener, Player candidate, float ownerDistanceGoal2)
