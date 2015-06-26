@@ -51,7 +51,14 @@ namespace CloudBall.Engines.Toothless.Roles
 
 			if (shotAngle > 2f * accuracy)
 			{
-				if (!info.Other.Players.Any(oppo => MightCatch(oppo.Position - owner.Position, shotOnGoalCen, 10, 0.75f)))
+				// vector for ball being shot at goal
+				var shot = Field.EnemyGoal.Center - owner.Position;
+				shot.Normalize();
+				shot *= 12f;
+
+				// if we cannot miss, shoot!
+				var toGoal = BallPath.Create(info, shot);
+				if (toGoal.End == BallPath.Ending.OtherGoal && toGoal.GetCatchUp(info.Other.Players, info.Ball).Count() <= 2)
 				{
 					owner.ActionShootGoal();
 					return owner;

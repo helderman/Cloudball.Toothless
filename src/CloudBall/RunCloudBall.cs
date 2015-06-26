@@ -13,8 +13,8 @@ namespace CloudBall
 		{
 			var teams = new List<ITeam>()
 			{
-				//TeamFactory.Load(@"*\Engines\*.dll"),
 				new CloudBall.Engines.Toothless.Bot(),
+				TeamFactory.Load(@"C:\Data\CodeReview\Wolkenhondjes_6.1.dll"),
 				new CloudBall.Engines.SimpleStart(),
 			};
 

@@ -41,9 +41,13 @@ namespace CloudBall.Engines.Toothless.Models
 
 		public static BallPath Create(TurnInfo info)
 		{
+			return Create(info, info.Ball.Velocity);
+		}
+
+		public static BallPath Create(TurnInfo info, Vector velocity)
+		{
 			var path = new BallPath();
 			var position = info.Ball.Position;
-			var velocity = info.Ball.Velocity;
 
 			path.Add(position);
 
