@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace CloudBall.Engines.Toothless
 {
-	[BotName("Toothless 2.0")]
+	[BotName("Toothless 3.0")]
 	public class Bot : ITeam
 	{
 		protected static readonly IRole[] Roles = new IRole[]
