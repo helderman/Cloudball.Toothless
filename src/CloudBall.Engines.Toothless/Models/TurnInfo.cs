@@ -37,7 +37,7 @@ namespace CloudBall.Engines.Toothless.Models
 				Match = matchInfo,
 			};
 			info.Path = BallPath.Create(info);
-			info.CatchUps = info.Path.GetCatchUp(info.Players).OrderBy(c => c.Turn).ToList();
+			info.CatchUps = info.Path.GetCatchUp(info.Players, info.Ball).OrderBy(c => c.Turn).ToList();
 			info.HasPossession =
 				myTeam.Players.Contains(ball.Owner) ||
 				myTeam.Players.Any(p => p.CanPickUpBall(ball)) ||

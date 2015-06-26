@@ -18,11 +18,14 @@ namespace CloudBall.Engines.Toothless.Models
 
 		public Ending End { get; protected set; }
 
-		public IEnumerable<CatchUp> GetCatchUp(IEnumerable<Player> players)
+		public IEnumerable<CatchUp> GetCatchUp(IEnumerable<Player> players, Ball ball)
 		{
+
 			foreach (var player in players)
 			{
-				for (var turn = 0; turn < Count; turn++)
+				var effectiveTurn = (ball.PickUpTimer > player.FallenTimer) ? ball.PickUpTimer : player.FallenTimer;
+
+				for (var turn = effectiveTurn; turn < Count; turn++)
 				{
 					var disPlayer = Constants.PlayerMaxVelocity * turn + Constants.BallMaxPickUpDistance;
 					var disBall = (this[turn] - player.Position).LengthSquared;
@@ -44,7 +47,7 @@ namespace CloudBall.Engines.Toothless.Models
 		public static BallPath Create(TurnInfo info)
 		{
 			var path = new BallPath();
-
+			
 			var position = info.Ball.Position;
 			var velocity = info.Ball.Velocity;
 
