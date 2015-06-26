@@ -1,9 +1,6 @@
 ﻿using Common;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CloudBall.Engines.Toothless.Models
 {
@@ -20,14 +17,12 @@ namespace CloudBall.Engines.Toothless.Models
 
 		public IEnumerable<CatchUp> GetCatchUp(IEnumerable<Player> players, Ball ball)
 		{
-
 			foreach (var player in players)
 			{
-				var effectiveTurn = (ball.PickUpTimer > player.FallenTimer) ? ball.PickUpTimer : player.FallenTimer;
-
-				for (var turn = effectiveTurn; turn < Count; turn++)
+				for (var turn = Math.Max(ball.PickUpTimer, player.FallenTimer); turn < Count; turn++)
 				{
-					var disPlayer = Constants.PlayerMaxVelocity * turn + Constants.BallMaxPickUpDistance;
+					var moveTurn =  turn - player.FallenTimer;
+					var disPlayer = Constants.PlayerMaxVelocity * moveTurn + Constants.BallMaxPickUpDistance;
 					var disBall = (this[turn] - player.Position).LengthSquared;
 
 					if (disPlayer * disPlayer > disBall)
@@ -87,9 +82,7 @@ namespace CloudBall.Engines.Toothless.Models
 					velocity.Y = -velocity.Y;
 					position.Y = 2 * Field.Borders.Bottom.Y - position.Y;
 				}
-
 				path.Add(position);
-
 			}
 			path.End = Ending.EndOfGame;
 			return path;
