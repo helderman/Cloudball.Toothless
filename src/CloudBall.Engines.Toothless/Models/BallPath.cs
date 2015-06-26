@@ -47,7 +47,6 @@ namespace CloudBall.Engines.Toothless.Models
 		public static BallPath Create(TurnInfo info)
 		{
 			var path = new BallPath();
-			
 			var position = info.Ball.Position;
 			var velocity = info.Ball.Velocity;
 
@@ -62,11 +61,21 @@ namespace CloudBall.Engines.Toothless.Models
 				{
 					velocity.X = -velocity.X;
 					position.X = 2 * Field.Borders.Left.X - position.X;
+					if (position.Y > Field.MyGoal.Top.Y && position.Y < Field.MyGoal.Bottom.Y)
+					{
+						path.End = Ending.OwnGoal;
+						return path;
+					}
 				}
 				if (position.X > Field.Borders.Right.X)
 				{
 					velocity.X = -velocity.X;
 					position.X = 2 * Field.Borders.Right.X - position.X;
+					if (position.Y > Field.EnemyGoal.Top.Y && position.Y < Field.EnemyGoal.Bottom.Y)
+					{
+						path.End = Ending.OtherGoal;
+						return path;
+					}
 				}
 				if (position.Y < Field.Borders.Top.Y)
 				{
