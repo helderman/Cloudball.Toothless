@@ -3,15 +3,24 @@ using Common;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CloudBall.Engines.Toothless.Roles
 {
 	public class BallOwner : IRole
 	{
 		public const float PassingPower = 7.5f;
+		public const float PassingPowerNoCandidate = 8.5f;
 		public const float PassingZ = .8f;
+
+		public const float MaximumShootDistanceSquared = 650 * 650;
+		
+		public const float MinimumPassDistanceSquared = 200 * 200;
+		public const float MaximumPassDistanceSquared = 500 * 500;
+
+		public static readonly float[] PassingZs = new float[]{.95f, .9f, .85f, .8f, .75f };
+		public static readonly float[] PassingPowers = new float[] { 8.5f, 8f, 7.5f, 7f, 6.5f };
+
+
 		public Player Apply(TurnInfo info, IEnumerable<Player> queue)
 		{
 			var owner = queue.FirstOrDefault(p => p == info.Ball.Owner);
@@ -19,80 +28,80 @@ namespace CloudBall.Engines.Toothless.Roles
 			// We are not the owner.
 			if (owner == null) { return null; }
 
-
 			var ownerDistanceToGoal2 = (Field.EnemyGoal.Center - owner.Position).LengthSquared;
+
+			if(!info.Other.Players.Any(p => (p.Position - Field.EnemyGoal.Center).LengthSquared  < ownerDistanceToGoal2))
+			{
+				if (ownerDistanceToGoal2 < 150 * 150)
+				{
+					owner.ActionShootGoal();
+				}
+				else
+				{
+					owner.ActionGo(Field.EnemyGoal.Center);
+				}
+				return owner;
+			}
+
+			var shotOnGoalTop = Field.EnemyGoal.Top - owner.Position;
+			var shotOnGoalCen = Field.EnemyGoal.Center - owner.Position;
+			var shotOnGoalBot = Field.EnemyGoal.Bottom - owner.Position;
+			var accuracy = Statistics.GetAccuracy(10, 0.75f);
+			var shotAngle = Theta.Create(shotOnGoalTop, shotOnGoalBot);
+
+			if (shotAngle > 2f * accuracy)
+			{
+				if (!info.Other.Players.Any(oppo => MightCatch(oppo.Position - owner.Position, shotOnGoalCen, 10, 0.75f)))
+				{
+					owner.ActionShootGoal();
+					return owner;
+				}
+			}
 
 			var passCandidates = info.Own.Players
 				.Where(p => p != owner && IsCandidate(owner, p, ownerDistanceToGoal2))
 				.OrderBy(p => (Field.EnemyGoal.Center - p.Position).LengthSquared)
 				.ToList();
 
-			if (passCandidates.Any())
+			if (!passCandidates.Any())
 			{
-				var oppos = info.Other.Players.Where(p => p.Position.X > owner.Position.X).ToList();
+				owner.ActionGo(Field.EnemyGoal.Center);
+				return owner;
+			}
 
-				var safe = new List<Player>();
+			var oppos = info.Other.Players.Where(p => p.Position.X > owner.Position.X).ToList();
 
-				foreach (var candidate in passCandidates)
+			foreach (var z in PassingZs)
+			{
+				foreach (var power in PassingPowers)
 				{
-					var veloMin = candidate.Position - owner.Position;
-					var veloMax = candidate.Position - owner.Position;
-					var accuracy = Statistics.GetAccuracy(PassingPower, PassingZ);
-					veloMin.Rotate(accuracy);
-					veloMax.Rotate(-accuracy);
-
-					var candidateDistance = (candidate.Position - owner.Position).Length -  Constants.PlayerMaxTackleDistance;
-					candidateDistance*=candidateDistance;
-
-					foreach (var oppo in oppos.Where(o => (o.Position - owner.Position).LengthSquared > candidateDistance))
+					var safe = new List<Player>();
+					foreach (var candidate in passCandidates)
 					{
-						var vector = oppo.Position - owner.Position;
-						var thetaMin = Mathematics.GetAngle(vector, veloMin);
-						var thetaMax = Mathematics.GetAngle(vector, veloMax);
-
-						var thetaSafe = Passing.GetSafeTheta(owner, oppo, PassingPower);
-
-						// those 
-						if (thetaSafe > thetaMin && thetaSafe < thetaMax)
+						if (!info.Other.Players.Any(oppo => MightCatch(oppo.Position - owner.Position, candidate.Position - owner.Position, power, z)))
 						{
-							continue;
+							safe.Add(candidate);
 						}
 					}
-					safe.Add(candidate);
+
+					if (safe.Any())
+					{
+						var target = safe.OrderBy(s => (s.Position - Field.EnemyGoal.Center).LengthSquared).FirstOrDefault();
+						owner.ActionShoot(target, PassingPower);
+						return owner;
+					}
 				}
-
-				if (safe.Any())
-				{
-					var target = safe.OrderBy(s => (s.Position - Field.EnemyGoal.Center).LengthSquared).FirstOrDefault();
-					owner.ActionShoot(target, PassingPower);
-					return owner;
-				}
 			}
-
-			// if getting too close to opponent, shoot on goal
-			if (info.Other.Players.Any(oppo => oppo.CanTackle(owner)))
-			{
-				owner.ActionShootGoal();
-				return owner;
-			}
-
-			// if nobody can catch, shoot on goal.
-			if (!info.Other.Players.Any(oppo => MightCatch(oppo.Position - owner.Position, Field.EnemyGoal.Position - owner.Position)))
-			{
-				owner.ActionShootGoal();
-				return owner;
-			}
-
 			// else run.
 			owner.ActionGo(Field.EnemyGoal.Center);
-					
+				
 			return owner;
 		}
-
-		private static bool MightCatch(Vector oppoVector, Vector targetVector)
+		
+		private static bool MightCatch(Vector oppoVector, Vector targetVector, float power, float z)
 		{
-			var accuracy = Statistics.GetAccuracy(PassingPower, PassingZ);
-			return Math.Abs(Mathematics.GetAngle(oppoVector, targetVector)) < accuracy;
+			var accuracy = Statistics.GetAccuracy(power, z);
+			return Math.Abs(Theta.Create(oppoVector, targetVector)) < accuracy;
 		}
 
 		private static bool IsCandidate(Player ballOwener, Player candidate, float ownerDistanceGoal2)
@@ -102,7 +111,7 @@ namespace CloudBall.Engines.Toothless.Roles
 
 			var ownDistance = (ballOwener.Position - candidate.Position).LengthSquared;
 
-			if (ownDistance < 200 * 200 || ownDistance > 500 * 500) { return false; }
+			if (ownDistance < MinimumPassDistanceSquared || ownDistance > MaximumPassDistanceSquared) { return false; }
 
 			return true;
 		}

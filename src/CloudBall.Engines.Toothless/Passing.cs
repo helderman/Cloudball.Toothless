@@ -1,4 +1,5 @@
-﻿using Common;
+﻿using CloudBall.Engines.Toothless.Roles;
+using Common;
 using System;
 
 namespace CloudBall.Engines.Toothless
@@ -6,13 +7,13 @@ namespace CloudBall.Engines.Toothless
 	public static class Passing
 	{
 		/// <summary>Gets the safe angle/theta to shoot.</summary>
-		public static float GetSafeTheta(IPosition ball, Player opponent, float power)
+		public static Theta GetSafeTheta(IPosition ball, Player opponent, float power)
 		{
 			var dis2 = (ball.Position - opponent.Position).LengthSquared;
 			return GetSafeTheta(dis2, power, opponent.FallenTimer);
 		}
 		/// <summary>Gets the safe angle/theta to shoot.</summary>
-		public static float GetSafeTheta(float distanceSquared, float power, int fallenimer)
+		public static Theta GetSafeTheta(float distanceSquared, float power, int fallenimer)
 		{
 			var first_Check = Math.Max(fallenimer, Constants.BallShootTimer) - 1;
 			// dis^2 < travel_opp^2 + travel_ball^2
@@ -33,6 +34,5 @@ namespace CloudBall.Engines.Toothless
 			}
 			return 0f;
 		}
-
 	}
 }

@@ -5,5 +5,5 @@
 [assembly: AssemblyProduct("CloudBall.Engines.Toothless")]
 [assembly: AssemblyCopyright("Copyright ©  2015")]
 
-[assembly: AssemblyVersion("2.0.0.0")]
-[assembly: AssemblyFileVersion("2.0.0.0")]
+[assembly: AssemblyVersion("3.0.0.0")]
+[assembly: AssemblyFileVersion("3.0.0.0")]

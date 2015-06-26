@@ -1,6 +1,10 @@
 Toothless
 =========
 
+Version 3.0
+-----------
+Redone passing mechanism.
+
 Version 2.0
 -----------
 Greatly improved fieldplay.

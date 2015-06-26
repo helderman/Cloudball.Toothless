@@ -1,4 +1,5 @@
-﻿using Common;
+﻿using CloudBall.Engines.Toothless.Roles;
+using Common;
 using System;
 
 namespace CloudBall.Engines.Toothless
@@ -26,7 +27,7 @@ namespace CloudBall.Engines.Toothless
 			int x = (int)((power - 4.9f) * 10f);
 			return BallDistances[x, Math.Min(511, turn)];
 		}
-		public static float GetAccuracy(float power, float z)
+		public static Theta GetAccuracy(float power, float z)
 		{
 			int x = (int)((power - 4.9f) * 10f);
 			int y = (int)((z - .745f) * 20f);
