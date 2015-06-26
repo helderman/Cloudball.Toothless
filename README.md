@@ -1,6 +1,10 @@
 Toothless
 =========
 
+Version 2.0
+-----------
+Greatly improved fieldplay.
+
 Version 1.1
 -----------
 Small tweak on shooting on goal.

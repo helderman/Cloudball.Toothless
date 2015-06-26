@@ -64,6 +64,16 @@ namespace CloudBall.Engines.Toothless.Scenarios
 				player.ActionGo(square.Target);
 				queue.Remove(player);
 			}
+					
+			foreach (var square in squares.Where(s => s.OwnPlayers.Count == 0))
+			{
+				var player = queue.OrderBy(p => (square.Target - p.Position).LengthSquared).FirstOrDefault();
+				if (player != null)
+				{
+					player.ActionGo(square.Target);
+					queue.Remove(player);
+				}
+			}
 
 			foreach (var player in queue)
 			{
@@ -71,8 +81,6 @@ namespace CloudBall.Engines.Toothless.Scenarios
 			}
 			return true;
 		}
-
-
 
 		public static float GetMiddleLine(IPosition ball)
 		{
@@ -131,6 +139,11 @@ namespace CloudBall.Engines.Toothless.Scenarios
 			public int CompareTo(object obj)
 			{
 				return CompareTo(obj as FieldSquare);
+			}
+
+			public override string ToString()
+			{
+				return String.Format("{0}: Own: {1}, Other: {2}", Quadrant, OwnPlayers.Count, OtherPlayers.Count);
 			}
 		}
 	}
