@@ -8,5 +8,6 @@
 		public static IRole CatchUp = new CatchUp();
 		public static IRole Keeper = new Keeper();
 		public static IRole Sweeper = new Sweeper();
+		public static IRole AttackDefender = new AttackDefender();
 	}
 }

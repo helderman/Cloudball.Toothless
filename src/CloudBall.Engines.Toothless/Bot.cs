@@ -18,6 +18,7 @@ namespace CloudBall.Engines.Toothless
 			Role.CatchUp,
 			Role.Keeper,
 			Role.Sweeper,
+			Role.AttackDefender
 		};
 
 		public void Action(Team myTeam, Team enemyTeam, Ball ball, MatchInfo matchInfo)
