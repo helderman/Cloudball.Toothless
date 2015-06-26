@@ -8,7 +8,7 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>CloudBall.Engines.Toothless</RootNamespace>
-    <AssemblyName>Toothless_0.1</AssemblyName>
+    <AssemblyName>Toothless_1.0</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -43,6 +43,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Bot.cs" />
+    <Compile Include="Mathematics.cs" />
     <Compile Include="Models\BallPath.cs" />
     <Compile Include="Models\CatchUp.cs" />
     <Compile Include="Models\PlayerDistance.cs" />
