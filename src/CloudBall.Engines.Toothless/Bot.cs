@@ -14,6 +14,7 @@ namespace CloudBall.Engines.Toothless
 		{
 			Role.BallOwner,
 			Role.Pickup,
+			Role.BallOwnerTackler,
 			Role.CatchUp,
 			Role.Keeper,
 			Role.Sweeper,

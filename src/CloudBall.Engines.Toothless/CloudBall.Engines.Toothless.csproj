@@ -51,6 +51,7 @@
     <Compile Include="Passing.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Roles\BallOwner.cs" />
+    <Compile Include="Roles\BallOwnerTackler.cs" />
     <Compile Include="Roles\CatchUp.cs" />
     <Compile Include="Roles\IRole.cs" />
     <Compile Include="Roles\Keeper.cs" />
